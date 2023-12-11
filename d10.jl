@@ -49,11 +49,24 @@ while !(newx == stx && newy == sty)
     newx, newy, invdir = new_xy(newx, newy, newdir)
     nstep += 1
 end
+push!(xs, stx)
+push!(ys, sty)
 
 ####
-using Luxor
+using PolygonOps, StaticArrays
 using Plots
 
-polygon = Point.(xs, ys)
-plot(Tuple.(polygon), legend=false)
+polygon = SVector.(xs, ys)
 
+dots = []
+dotx = collect(1:140)
+doty = collect(1:140)
+for x in dotx
+    for y in doty
+        push!(dots, (x, y))
+    end
+end
+
+points = SVector.(dots)
+inside = [inpolygon(p, polygon; in = true, on = false, out = false) for p in points]
+sum(inside)
